@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+
+        .message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .input-error {
+            border-color: #dc3545 !important;
+            background: #fef7f7 !important;
+        }
+
+        .feedback-display {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feedback-display h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .feedback-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .feedback-item .name {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .feedback-item .text {
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .feedback-item .time {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .form-header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .rating-group {
+            margin-bottom: 25px;
+        }
+
+        .rating {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .rating input[type="radio"] {
+            display: none;
+        }
+
+        .rating label {
+            font-size: 2rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 0;
+        }
+
+        .rating label:hover,
+        .rating label:hover ~ label,
+        .rating input[type="radio"]:checked ~ label {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <h1>Feedback Form</h1>
+            <p>We'd love to hear your thoughts and suggestions!</p>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <form id="feedbackForm">
+            <div class="form-group">
+                <label for="name">Name *</label>
+                <input type="text" 
+                       id="name" 
+                       name="name" 
+                       placeholder="Enter your full name"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email (optional)</label>
+                <input type="email" 
+                       id="email" 
+                       name="email" 
+                       placeholder="Enter your email address">
+            </div>
+
+            <div class="rating-group">
+                <label>Rate your experience *</label>
+                <div class="rating">
+                    <input type="radio" id="star5" name="rating" value="5" required>
+                    <label for="star5">★</label>
+                    <input type="radio" id="star4" name="rating" value="4">
+                    <label for="star4">★</label>
+                    <input type="radio" id="star3" name="rating" value="3">
+                    <label for="star3">★</label>
+                    <input type="radio" id="star2" name="rating" value="2">
+                    <label for="star2">★</label>
+                    <input type="radio" id="star1" name="rating" value="1">
+                    <label for="star1">★</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="feedback">Feedback *</label>
+                <textarea id="feedback" 
+                          name="feedback" 
+                          placeholder="Share your thoughts, suggestions, or experiences..."
+                          required></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Feedback</button>
+        </form>
+
+        <div id="feedbackDisplay" class="feedback-display" style="display: none;">
+            <h3>Recent Feedback</h3>
+            <div id="feedbackList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Store feedback in memory (will reset on page refresh)
+        let feedbacks = [];
+
+        // Get form elements
+        const form = document.getElementById('feedbackForm');
+        const messageDiv = document.getElementById('message');
+        const feedbackDisplay = document.getElementById('feedbackDisplay');
+        const feedbackList = document.getElementById('feedbackList');
+
+        // Form submission handler
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(form);
+            const name = formData.get('name').trim();
+            const email = formData.get('email').trim();
+            const rating = formData.get('rating');
+            const feedback = formData.get('feedback').trim();
+            
+            // Validate required fields
+            if (!name || !rating || !feedback) {
+                showMessage('Please fill in all required fields.', 'error');
+                highlightErrors();
+                return;
+            }
+            
+            // Clear any previous error highlights
+            clearErrors();
+            
+            // Create feedback object
+            const feedbackObj = {
+                name: name,
+                email: email,
+                rating: rating,
+                feedback: feedback,
+                timestamp: new Date().toLocaleString()
+            };
+            
+            // Add to feedbacks array
+            feedbacks.unshift(feedbackObj);
+            
+            // Show success message
+            showMessage(`Thank you, ${name}! Your feedback has been submitted successfully.`, 'success');
+            
+            // Reset form
+            form.reset();
+            
+            // Display feedback
+            displayFeedbacks();
+        });
+
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.classList.add('show');
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 5000);
+        }
+
+        function highlightErrors() {
+            const requiredFields = ['name', 'feedback'];
+            const ratingInputs = document.querySelectorAll('input[name="rating"]');
+            
+            requiredFields.forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (!field.value.trim()) {
+                    field.classList.add('input-error');
+                }
+            });
+            
+            // Check if rating is selected
+            const ratingSelected = Array.from(ratingInputs).some(input => input.checked);
+            if (!ratingSelected) {
+                ratingInputs.forEach(input => {
+                    input.parentElement.style.border = '2px solid #dc3545';
+                    input.parentElement.style.borderRadius = '8px';
+                    input.parentElement.style.padding = '5px';
+                });
+            }
+        }
+
+        function clearErrors() {
+            const errorFields = document.querySelectorAll('.input-error');
+            errorFields.forEach(field => {
+                field.classList.remove('input-error');
+            });
+            
+            const ratingDiv = document.querySelector('.rating');
+            ratingDiv.style.border = 'none';
+            ratingDiv.style.padding = '0';
+        }
+
+        function displayFeedbacks() {
+            if (feedbacks.length === 0) {
+                feedbackDisplay.style.display = 'none';
+                return;
+            }
+            
+            feedbackDisplay.style.display = 'block';
+            feedbackList.innerHTML = '';
+            
+            feedbacks.slice(0, 5).forEach(fb => {
+                const feedbackItem = document.createElement('div');
+                feedbackItem.className = 'feedback-item';
+                
+                const stars = '★'.repeat(parseInt(fb.rating)) + '☆'.repeat(5 - parseInt(fb.rating));
+                
+                feedbackItem.innerHTML = `
+                    <div class="name">${fb.name} ${fb.email ? `(${fb.email})` : ''}</div>
+                    <div style="color: #ffd700; margin-bottom: 5px;">${stars}</div>
+                    <div class="text">${fb.feedback}</div>
+                    <div class="time">${fb.timestamp}</div>
+                `;
+                
+                feedbackList.appendChild(feedbackItem);
+            });
+        }
+
+        // Clear error styling when user starts typing
+        document.getElementById('name').addEventListener('input', clearErrors);
+        document.getElementById('feedback').addEventListener('input', clearErrors);
+        document.querySelectorAll('input[name="rating"]').forEach(input => {
+            input.addEventListener('change', clearErrors);
+        });
+    </script>
+</body>
+</html>
